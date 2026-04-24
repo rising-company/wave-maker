@@ -3,12 +3,11 @@ import { noiseGLSL } from './noise'
 /**
  * Builds the wave gradient fragment shader.
  *
- * Faithfully adapted from Alex Harri's "A flowing WebGL gradient, deconstructed"
- * https://alexharri.com/blog/webgl-gradients
- * https://github.com/alexharri/website
- *
- * Extended with configurable uniforms for wave count, valley geometry,
- * amplitude, speed, blur, and noise detail.
+ * Two modes:
+ * - Alex Harri mode (valley off): Full-canvas flowing gradient with subtle wave boundaries.
+ *   Faithfully adapted from https://alexharri.com/blog/webgl-gradients
+ * - Stitch mode (valley on): Dark background with luminous aurora-like wave bands.
+ *   Inspired by the Google Stitch landing page (stitch.withgoogle.com).
  */
 export function buildFragmentShader(isWebGL2: boolean): string {
   const versionHeader = isWebGL2
@@ -56,9 +55,9 @@ float ease_in(float x) {
 }
 
 // Wave blur part — multi-sample blur for smooth edges
-float wave_alpha_part(float dist, float blur_fac, float t) {
-  float exp = mix(0.90000, 1.20000, t);
-  float v = pow(blur_fac, exp);
+float wave_alpha_part(float dist, float blur_amount, float t) {
+  float e = mix(0.90000, 1.20000, t);
+  float v = pow(blur_amount, e);
   v = ease_in(v);
   v = smooth5(v);
   v = clamp(v, 0.008, 1.0);
@@ -125,20 +124,11 @@ float calc_blur(float offset) {
   return blur_fac;
 }
 
-// Wave alpha — distance from wave curve with multi-sample blur
-float wave_alpha(float Y, float wave_height, float offset) {
-  // Valley geometry: parabolic dip pushing wave away from center
-  float valley_shift = 0.0;
-  if (u_valley > 0.5) {
-    float nx = gl_FragCoord.x / u_resolution.x;
-    valley_shift = u_valley_depth * u_resolution.y * 4.0 * (nx - 0.5) * (nx - 0.5);
-  }
-
-  float wave_y = Y + valley_shift + wave_y_noise(offset) * wave_height * u_amplitude;
+// Wave alpha given a pre-computed wave Y position
+float wave_alpha_at(float wave_y, float offset) {
   float dist = wave_y - gl_FragCoord.y;
   float blur_fac = calc_blur(offset);
 
-  // Multi-sample blur (7 samples for quality)
   const float PART = 1.0 / 7.0;
   float sum = 0.0;
   for (int i = 0; i < 7; i++) {
@@ -148,6 +138,12 @@ float wave_alpha(float Y, float wave_height, float offset) {
   return sum;
 }
 
+// Wave alpha with built-in Alex Harri geometry (no valley)
+float wave_alpha_harri(float Y, float wave_height, float offset) {
+  float wave_y = Y + wave_y_noise(offset) * wave_height * u_amplitude;
+  return wave_alpha_at(wave_y, offset);
+}
+
 vec3 calc_color(float lightness) {
   lightness = clamp(lightness, 0.0, 1.0);
   return vec3(${textureSample}(u_gradient, vec2(lightness, 0.5)));
@@ -155,52 +151,95 @@ vec3 calc_color(float lightness) {
 
 void main() {
   float h = u_resolution.y;
-
-  // Wave base positions and heights
-  float WAVE1_Y = 0.45 * h;
-  float WAVE2_Y = 0.90 * h;
-  float WAVE3_Y = 0.25 * h;
-  float WAVE1_HEIGHT = 0.195 * h;
-  float WAVE2_HEIGHT = 0.144 * h;
-  float WAVE3_HEIGHT = 0.12 * h;
-
-  // Background and per-wave lightness (different time offsets decorrelate)
-  float bg_lightness = background_noise(-192.4);
-  float w1_lightness = background_noise( 273.3);
-  float w2_lightness = background_noise( 623.1);
-  float w3_lightness = background_noise( 911.7);
-
-  // Wave alphas
-  float w1_alpha = wave_alpha(WAVE1_Y, WAVE1_HEIGHT, 112.5 * 48.75);
-  float w2_alpha = u_wave_count >= 2.0 ? wave_alpha(WAVE2_Y, WAVE2_HEIGHT, 225.0 * 36.00) : 0.0;
-  float w3_alpha = u_wave_count >= 3.0 ? wave_alpha(WAVE3_Y, WAVE3_HEIGHT, 337.5 * 24.00) : 0.0;
-
-  float lightness;
+  float w = u_resolution.x;
 
   if (u_valley > 0.5) {
-    // Stitch/valley mode: dark background, waves add luminous color.
-    // Background stays at the dark end of the gradient (near 0).
-    // Waves push lightness into the bright range (0.3 - 0.9).
-    float bg_base = 0.03 + bg_lightness * 0.06;
+    // =============================================
+    // STITCH MODE — luminous aurora waves on dark background
+    // =============================================
+    // Waves sit in the bottom portion of the screen.
+    // A steep valley curve pushes them high at the edges,
+    // leaving a dark center for content.
+    // Composition is additive: overlapping waves get brighter.
 
-    // Wave lightness in the bright color range
-    float w1_l = 0.4 + w1_lightness * 0.5;
-    float w2_l = 0.55 + w2_lightness * 0.4;
-    float w3_l = 0.7 + w3_lightness * 0.3;
+    float nx = gl_FragCoord.x / w; // 0..1 across screen
 
-    lightness = bg_base;
-    lightness = lerp(lightness, w2_l, w2_alpha);
-    lightness = lerp(lightness, w1_l, w1_alpha);
-    lightness = lerp(lightness, w3_l, w3_alpha);
+    // Valley curve: steep at edges, flat in center.
+    // pow(_, 1.6) is steeper than a parabola at the edges
+    // but flatter in the center — matches the Stitch "U" shape.
+    float edge_dist = abs(nx * 2.0 - 1.0); // 0 at center, 1 at edges
+    float valley_curve = pow(edge_dist, 1.6);
+    float valley_push = u_valley_depth * h * 1.8 * valley_curve;
+
+    // Wave base positions — low on screen so they mainly live in the bottom 40%
+    float W1_BASE = 0.25 * h;
+    float W2_BASE = 0.45 * h;
+    float W3_BASE = 0.12 * h;
+
+    // Large wave heights for dramatic undulation
+    float W1_H = 0.24 * h;
+    float W2_H = 0.20 * h;
+    float W3_H = 0.16 * h;
+
+    // Compute wave Y positions: base + valley push + noise
+    float w1_y = W1_BASE + valley_push + wave_y_noise(5475.0) * W1_H * u_amplitude;
+    float w2_y = W2_BASE + valley_push + wave_y_noise(8100.0) * W2_H * u_amplitude;
+    float w3_y = W3_BASE + valley_push + wave_y_noise(12300.0) * W3_H * u_amplitude;
+
+    // Wave alphas — soft, wide transitions
+    float w1_a = wave_alpha_at(w1_y, 5475.0);
+    float w2_a = u_wave_count >= 2.0 ? wave_alpha_at(w2_y, 8100.0) : 0.0;
+    float w3_a = u_wave_count >= 3.0 ? wave_alpha_at(w3_y, 12300.0) : 0.0;
+
+    // Per-wave color variation via background noise at different offsets.
+    // Each wave samples different noise → different colors along its length.
+    float w1_color = background_noise(273.3);   // range ~0.2-0.8
+    float w2_color = background_noise(623.1);
+    float w3_color = background_noise(911.7);
+
+    // ADDITIVE composition on dark background.
+    // Each wave contributes lightness that maps into the gradient.
+    // Where waves overlap, lightness adds up → brighter colors.
+    float lightness = 0.01; // near-black background
+
+    // Wave 1 (main): maps to gradient range ~0.25-0.65
+    lightness += w1_a * (0.25 + w1_color * 0.40);
+    // Wave 2 (secondary): maps to gradient range ~0.30-0.70
+    lightness += w2_a * (0.20 + w2_color * 0.50);
+    // Wave 3 (accent): maps to gradient range ~0.35-0.75
+    if (u_wave_count >= 3.0)
+      lightness += w3_a * (0.15 + w3_color * 0.45);
+
+    lightness = clamp(lightness, 0.0, 1.0);
+    ${fragColorName} = vec4(calc_color(lightness), 1.0);
+
   } else {
-    // Alex Harri mode: full-canvas gradient with subtle wave boundaries.
-    lightness = bg_lightness;
+    // =============================================
+    // ALEX HARRI MODE — full-canvas flowing gradient
+    // =============================================
+    float WAVE1_Y = 0.45 * h;
+    float WAVE2_Y = 0.90 * h;
+    float WAVE3_Y = 0.25 * h;
+    float WAVE1_HEIGHT = 0.195 * h;
+    float WAVE2_HEIGHT = 0.144 * h;
+    float WAVE3_HEIGHT = 0.12 * h;
+
+    float bg_lightness = background_noise(-192.4);
+    float w1_lightness = background_noise( 273.3);
+    float w2_lightness = background_noise( 623.1);
+    float w3_lightness = background_noise( 911.7);
+
+    float w1_alpha = wave_alpha_harri(WAVE1_Y, WAVE1_HEIGHT, 112.5 * 48.75);
+    float w2_alpha = u_wave_count >= 2.0 ? wave_alpha_harri(WAVE2_Y, WAVE2_HEIGHT, 225.0 * 36.00) : 0.0;
+    float w3_alpha = u_wave_count >= 3.0 ? wave_alpha_harri(WAVE3_Y, WAVE3_HEIGHT, 337.5 * 24.00) : 0.0;
+
+    float lightness = bg_lightness;
     lightness = lerp(lightness, w2_lightness, w2_alpha);
     lightness = lerp(lightness, w1_lightness, w1_alpha);
     lightness = lerp(lightness, w3_lightness, w3_alpha);
-  }
 
-  ${fragColorName} = vec4(calc_color(lightness), 1.0);
+    ${fragColorName} = vec4(calc_color(lightness), 1.0);
+  }
 }
 `
 }

@@ -30,10 +30,6 @@ export function createShowcases(container: HTMLElement): void {
   const stitchCanvas = document.getElementById('showcase-stitch') as HTMLCanvasElement
   new WaveMaker(stitchCanvas, {
     preset: 'stitch',
-    valley: true,
-    valleyDepth: 0.35,
-    amplitude: 1.2,
-    speed: 0.8,
   })
 
   const oceanCanvas = document.getElementById('showcase-ocean') as HTMLCanvasElement

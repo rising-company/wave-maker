@@ -12,5 +12,5 @@ export function createHero(container: HTMLElement): void {
     </section>
   `
   const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement
-  new WaveMaker(canvas, { preset: 'stitch', valley: true, speed: 0.6 })
+  new WaveMaker(canvas, { preset: 'stitch' })
 }
