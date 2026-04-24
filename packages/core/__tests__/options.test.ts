@@ -11,7 +11,7 @@ describe('resolveOptions', () => {
   it('applies preset defaults', () => {
     const opts = resolveOptions({ preset: 'stitch' })
     expect(opts.valley).toBe(true)
-    expect(opts.amplitude).toBe(1.2)
+    expect(opts.amplitude).toBe(1.3)
   })
 
   it('user options override preset defaults', () => {

@@ -1,9 +1,13 @@
 import type { Preset } from '../types'
 export const stitch: Preset = {
   name: 'stitch',
-  colors: ['#1a0533', '#4a0e8f', '#6b3fa0', '#c9a87c', '#d4a574', '#f5e6d3'],
+  // Dark-to-luminous: near-black bg → deep purple → blue → cyan → white glow
+  colors: ['#020008', '#0d0030', '#2a0080', '#5533cc', '#7755ff', '#aa99ff'],
   defaults: {
     valley: true,
-    amplitude: 1.2,
+    amplitude: 1.3,
+    waveCount: 2,
+    blur: 1.2,
+    noiseDetail: 3,
   },
 }

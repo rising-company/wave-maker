@@ -156,7 +156,7 @@ vec3 calc_color(float lightness) {
 void main() {
   float h = u_resolution.y;
 
-  // Wave base positions and heights (from Alex Harri's original)
+  // Wave base positions and heights
   float WAVE1_Y = 0.45 * h;
   float WAVE2_Y = 0.90 * h;
   float WAVE3_Y = 0.25 * h;
@@ -175,11 +175,30 @@ void main() {
   float w2_alpha = u_wave_count >= 2.0 ? wave_alpha(WAVE2_Y, WAVE2_HEIGHT, 225.0 * 36.00) : 0.0;
   float w3_alpha = u_wave_count >= 3.0 ? wave_alpha(WAVE3_Y, WAVE3_HEIGHT, 337.5 * 24.00) : 0.0;
 
-  // Composite lightness
-  float lightness = bg_lightness;
-  lightness = lerp(lightness, w2_lightness, w2_alpha);
-  lightness = lerp(lightness, w1_lightness, w1_alpha);
-  lightness = lerp(lightness, w3_lightness, w3_alpha);
+  float lightness;
+
+  if (u_valley > 0.5) {
+    // Stitch/valley mode: dark background, waves add luminous color.
+    // Background stays at the dark end of the gradient (near 0).
+    // Waves push lightness into the bright range (0.3 - 0.9).
+    float bg_base = 0.03 + bg_lightness * 0.06;
+
+    // Wave lightness in the bright color range
+    float w1_l = 0.4 + w1_lightness * 0.5;
+    float w2_l = 0.55 + w2_lightness * 0.4;
+    float w3_l = 0.7 + w3_lightness * 0.3;
+
+    lightness = bg_base;
+    lightness = lerp(lightness, w2_l, w2_alpha);
+    lightness = lerp(lightness, w1_l, w1_alpha);
+    lightness = lerp(lightness, w3_l, w3_alpha);
+  } else {
+    // Alex Harri mode: full-canvas gradient with subtle wave boundaries.
+    lightness = bg_lightness;
+    lightness = lerp(lightness, w2_lightness, w2_alpha);
+    lightness = lerp(lightness, w1_lightness, w1_alpha);
+    lightness = lerp(lightness, w3_lightness, w3_alpha);
+  }
 
   ${fragColorName} = vec4(calc_color(lightness), 1.0);
 }
