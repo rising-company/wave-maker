@@ -1,0 +1,27 @@
+{
+  "name": "@rising-company/wave-maker-vue",
+  "version": "0.1.0",
+  "description": "Vue component for wave-maker WebGL gradients",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": { "build": "tsup" },
+  "license": "MIT",
+  "peerDependencies": {
+    "@rising-company/wave-maker": "workspace:*",
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@rising-company/wave-maker": "workspace:*",
+    "vue": "^3.5.0",
+    "tsup": "^8.0.0"
+  }
+}
