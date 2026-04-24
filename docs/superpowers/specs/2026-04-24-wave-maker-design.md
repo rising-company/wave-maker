@@ -6,7 +6,7 @@ An open-source npm library for generating beautiful, animated WebGL wave gradien
 
 **Target audience:** Frontend developers who want a drop-in animated wave background with minimal WebGL knowledge.
 
-**Scope (v1):** Wave gradients only. Mesh gradients are a future addition.
+**Scope (v1):** Wave gradients.
 
 ## Package Structure
 
@@ -24,46 +24,98 @@ Framework wrappers have a peer dependency on the core package.
 
 ## Core API
 
-### Constructor
+### Full Type Definitions
 
 ```typescript
-import { WaveMaker } from '@rising-company/wave-maker'
-
-const wave = new WaveMaker(canvas: HTMLCanvasElement, options?: WaveMakerOptions)
-```
-
-### Options
-
-```typescript
-interface WaveMakerOptions {
-  preset?: PresetName        // Default: 'ocean'
-  colors?: string[]          // Override preset colors (3-6 hex values)
-  speed?: number             // Animation speed multiplier. Default: 1.0. 0 = frozen.
-  amplitude?: number         // Wave height multiplier. Default: 1.0
-  waveCount?: 1 | 2 | 3     // Number of wave layers. Default: 2
-  valley?: boolean           // Stitch-style center valley. Default: false
-  valleyDepth?: number       // Valley dip depth (0-1). Default: 0.32
-  blur?: number              // Edge blur intensity. Default: 1.0
-  noiseDetail?: number       // Noise octaves (1-6). Default: 4
-  fps?: number               // Target frame rate cap. Default: 60
-  pixelRatio?: number        // Device pixel ratio. Default: window.devicePixelRatio
-  animate?: boolean          // Auto-start animation. Default: true
-}
+// ---- Types ----
 
 type PresetName = 'ocean' | 'sunset' | 'aurora' | 'stitch' | 'midnight' | 'ember'
-```
 
-### Instance Methods
+interface WaveMakerOptions {
+  /** Named color theme. Default: 'ocean' */
+  preset?: PresetName
+  /** Override preset colors (3-6 hex values) */
+  colors?: string[]
+  /** Animation speed multiplier. 0 = frozen. Default: 1.0 */
+  speed?: number
+  /** Wave height multiplier. Default: 1.0 */
+  amplitude?: number
+  /** Number of wave layers. Default: 2 */
+  waveCount?: 1 | 2 | 3
+  /** Stitch-style center valley for overlaying UI content. Default: false */
+  valley?: boolean
+  /** Valley dip depth (0-1). Only applies when valley is true. Default: 0.32 */
+  valleyDepth?: number
+  /** Edge blur intensity. Default: 1.0 */
+  blur?: number
+  /** Noise octaves (1-6). More = richer detail, higher GPU cost. Default: 4 */
+  noiseDetail?: number
+  /** Target frame rate cap. Default: 60 */
+  fps?: number
+  /** Device pixel ratio. Default: window.devicePixelRatio */
+  pixelRatio?: number
+  /** Auto-start animation on creation. Default: true */
+  animate?: boolean
+}
 
-```typescript
-wave.play(): void           // Resume animation
-wave.pause(): void          // Pause animation
-wave.destroy(): void        // Cleanup WebGL context, stop animation, remove listeners
-wave.resize(): void         // Manually trigger resize (auto via ResizeObserver)
-wave.setPreset(name: PresetName): void   // Switch preset (smooth transition)
-wave.setColors(colors: string[]): void   // Override colors
-wave.setSpeed(speed: number): void       // Update speed
-wave.setAmplitude(amp: number): void     // Update amplitude
+interface Preset {
+  name: string
+  /** 3-6 hex color strings */
+  colors: string[]
+  /** Default option overrides for this preset */
+  defaults?: Partial<Omit<WaveMakerOptions, 'preset' | 'colors'>>
+}
+
+// ---- Core class ----
+
+declare class WaveMaker {
+  constructor(canvas: HTMLCanvasElement, options?: WaveMakerOptions)
+
+  /** Resume animation */
+  play(): void
+  /** Pause animation */
+  pause(): void
+  /** Cleanup WebGL context, stop animation, remove listeners */
+  destroy(): void
+  /** Manually trigger resize (auto via ResizeObserver) */
+  resize(): void
+  /** Switch preset with smooth color transition */
+  setPreset(name: PresetName): void
+  /** Override gradient colors */
+  setColors(colors: string[]): void
+  /** Update animation speed */
+  setSpeed(speed: number): void
+  /** Update wave height */
+  setAmplitude(amplitude: number): void
+
+  /** Whether animation is currently playing */
+  readonly isPlaying: boolean
+  /** Current active preset name, or null if using custom colors */
+  readonly currentPreset: PresetName | null
+}
+
+// ---- React ----
+
+// @rising-company/wave-maker-react
+interface WaveMakerProps extends WaveMakerOptions {
+  className?: string
+  style?: React.CSSProperties
+  id?: string
+}
+
+declare function WaveMaker(props: WaveMakerProps): React.JSX.Element
+
+// ---- Vue ----
+
+// @rising-company/wave-maker-vue
+// <WaveMaker preset="ocean" valley :speed="0.8" class="absolute inset-0" />
+// Props map 1:1 to WaveMakerOptions
+
+// ---- Svelte ----
+
+// @rising-company/wave-maker-svelte
+// <WaveMaker preset="aurora" valley speed={1.2} class="absolute inset-0" />
+// Props map 1:1 to WaveMakerOptions
 ```
 
 ## Presets
