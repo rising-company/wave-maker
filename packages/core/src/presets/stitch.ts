@@ -1,16 +1,18 @@
 import type { Preset } from '../types'
 export const stitch: Preset = {
   name: 'stitch',
-  // Exact colors from Google Stitch's Unicorn Studio shader (Layer 6 gradient stops):
-  // black → purple/indigo → purple → blue → cyan/teal
-  colors: ['#000000', '#6056F0', '#9154E7', '#4285F4', '#40D9C6'],
+  // Colors from Stitch's Unicorn Studio shader, with extended black range.
+  // Stitch's gradient is black until ~33% of the range, then transitions
+  // through purple → blue → cyan. We approximate this with 6 stops where
+  // the first two are black/near-black to keep most of the gradient dark.
+  colors: ['#000000', '#030010', '#6056F0', '#9154E7', '#4285F4', '#40D9C6'],
   defaults: {
     valley: true,
-    valleyDepth: 0.40,
-    amplitude: 1.4,
+    valleyDepth: 0.38,
+    amplitude: 1.2,
     waveCount: 2,
-    blur: 2.5,      // very wide/soft edges (Stitch uses multi-pass Gaussian blur)
-    speed: 0.5,     // slow, smooth animation
+    blur: 1.0,      // moderate edge blur; Stitch's softness comes from post-process Gaussian blur
+    speed: 0.4,     // slow, smooth animation
     noiseDetail: 3,
   },
 }

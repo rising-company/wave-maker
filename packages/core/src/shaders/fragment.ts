@@ -157,58 +157,58 @@ void main() {
     // =============================================
     // STITCH MODE — luminous aurora waves on dark background
     // =============================================
-    // Waves sit in the bottom portion of the screen.
-    // A steep valley curve pushes them high at the edges,
-    // leaving a dark center for content.
-    // Composition is additive: overlapping waves get brighter.
+    // Most of the screen is black. Waves live in the bottom ~35%.
+    // The valley pushes waves upward at left/right edges, creating
+    // a U-shape with a dark center for content.
+    // Additive composition: overlapping waves get brighter.
 
     float nx = gl_FragCoord.x / w; // 0..1 across screen
+    float ny = gl_FragCoord.y / h; // 0..1 up screen
 
-    // Valley curve: steep at edges, flat in center.
-    // pow(_, 1.6) is steeper than a parabola at the edges
-    // but flatter in the center — matches the Stitch "U" shape.
+    // Valley curve: smooth U-shape, steep at edges, flat in center.
     float edge_dist = abs(nx * 2.0 - 1.0); // 0 at center, 1 at edges
-    float valley_curve = pow(edge_dist, 1.6);
-    float valley_push = u_valley_depth * h * 1.8 * valley_curve;
+    float valley_curve = pow(edge_dist, 2.0);
+    float valley_push = u_valley_depth * h * 1.5 * valley_curve;
 
-    // Wave base positions — low on screen so they mainly live in the bottom 40%
-    float W1_BASE = 0.25 * h;
-    float W2_BASE = 0.45 * h;
-    float W3_BASE = 0.12 * h;
+    // Wave base positions — confined to bottom 35% of screen
+    float W1_BASE = 0.18 * h;
+    float W2_BASE = 0.30 * h;
+    float W3_BASE = 0.08 * h;
 
-    // Large wave heights for dramatic undulation
-    float W1_H = 0.24 * h;
-    float W2_H = 0.20 * h;
-    float W3_H = 0.16 * h;
+    // Moderate wave heights
+    float W1_H = 0.15 * h;
+    float W2_H = 0.12 * h;
+    float W3_H = 0.10 * h;
 
     // Compute wave Y positions: base + valley push + noise
     float w1_y = W1_BASE + valley_push + wave_y_noise(5475.0) * W1_H * u_amplitude;
     float w2_y = W2_BASE + valley_push + wave_y_noise(8100.0) * W2_H * u_amplitude;
     float w3_y = W3_BASE + valley_push + wave_y_noise(12300.0) * W3_H * u_amplitude;
 
-    // Wave alphas — soft, wide transitions
+    // Wave alphas
     float w1_a = wave_alpha_at(w1_y, 5475.0);
     float w2_a = u_wave_count >= 2.0 ? wave_alpha_at(w2_y, 8100.0) : 0.0;
     float w3_a = u_wave_count >= 3.0 ? wave_alpha_at(w3_y, 12300.0) : 0.0;
 
-    // Per-wave color variation via background noise at different offsets.
-    // Each wave samples different noise → different colors along its length.
-    float w1_color = background_noise(273.3);   // range ~0.2-0.8
-    float w2_color = background_noise(623.1);
-    float w3_color = background_noise(911.7);
+    // Per-wave color variation via background noise.
+    // Remap to 0..1 range (background_noise returns ~0.2-0.8)
+    float w1_color = clamp((background_noise(273.3) - 0.3) * 2.0, 0.0, 1.0);
+    float w2_color = clamp((background_noise(623.1) - 0.3) * 2.0, 0.0, 1.0);
+    float w3_color = clamp((background_noise(911.7) - 0.3) * 2.0, 0.0, 1.0);
 
-    // ADDITIVE composition on dark background.
-    // Each wave contributes lightness that maps into the gradient.
-    // Where waves overlap, lightness adds up → brighter colors.
-    float lightness = 0.01; // near-black background
+    // ADDITIVE composition on black background.
+    // Lightness values target the upper portion of the gradient
+    // (0.0-0.33 is black in the gradient, 0.33+ is where color starts).
+    // Each wave adds a modest amount; overlap brightens.
+    float lightness = 0.0; // pure black background
 
-    // Wave 1 (main): maps to gradient range ~0.25-0.65
-    lightness += w1_a * (0.25 + w1_color * 0.40);
-    // Wave 2 (secondary): maps to gradient range ~0.30-0.70
-    lightness += w2_a * (0.20 + w2_color * 0.50);
-    // Wave 3 (accent): maps to gradient range ~0.35-0.75
+    // Wave 1 (main): lightness in 0.33-0.60 range (purple zone)
+    lightness += w1_a * (0.33 + w1_color * 0.27);
+    // Wave 2 (secondary): lightness in 0.35-0.65 range
+    lightness += w2_a * (0.35 + w2_color * 0.30);
+    // Wave 3 (accent): lightness in 0.30-0.55 range
     if (u_wave_count >= 3.0)
-      lightness += w3_a * (0.15 + w3_color * 0.45);
+      lightness += w3_a * (0.30 + w3_color * 0.25);
 
     lightness = clamp(lightness, 0.0, 1.0);
     ${fragColorName} = vec4(calc_color(lightness), 1.0);
