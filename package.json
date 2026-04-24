@@ -1,0 +1,12 @@
+{
+  "name": "wave-maker-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "dev": "pnpm --filter demo dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
