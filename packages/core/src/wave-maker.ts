@@ -5,7 +5,7 @@ import { createWebGLContext } from './renderer/webgl-context'
 import { createProgram } from './renderer/shader-compiler'
 import { uploadGradientTexture } from './renderer/gradient-texture'
 import { AnimationLoop } from './renderer/animation-loop'
-import { vertexShaderSource } from './shaders/vertex'
+import { buildVertexShader } from './shaders/vertex'
 import { buildFragmentShader } from './shaders/fragment'
 
 /** Fully resolved options with no optional fields */
@@ -92,8 +92,9 @@ export class WaveMaker {
     this._isWebGL2 = isWebGL2
 
     // Compile shaders and create program
+    const vertexSource = buildVertexShader(isWebGL2)
     const fragmentSource = buildFragmentShader(isWebGL2)
-    this._program = createProgram(gl, vertexShaderSource, fragmentSource)
+    this._program = createProgram(gl, vertexSource, fragmentSource)
     gl.useProgram(this._program)
 
     // Set up fullscreen quad geometry
