@@ -1,4 +1,4 @@
-import { WaveMaker } from '@rising-company/wave-maker'
+import { WaveMaker } from '@rising-company/wave-maker-core'
 
 export function createHero(container: HTMLElement): void {
   container.innerHTML = `
@@ -7,7 +7,7 @@ export function createHero(container: HTMLElement): void {
       <div class="hero-content">
         <h1 class="hero-title">wave-maker</h1>
         <p class="hero-subtitle">Beautiful WebGL wave gradients for the web</p>
-        <code class="hero-install">npm i @rising-company/wave-maker</code>
+        <code class="hero-install">npm i @rising-company/wave-maker-core</code>
       </div>
     </section>
   `

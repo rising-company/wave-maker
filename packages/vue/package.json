@@ -15,12 +15,15 @@
   "files": ["dist", "src"],
   "scripts": { "build": "tsup" },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
-    "@rising-company/wave-maker": "workspace:*",
+    "@rising-company/wave-maker-core": "workspace:*",
     "vue": "^3.3.0"
   },
   "devDependencies": {
-    "@rising-company/wave-maker": "workspace:*",
+    "@rising-company/wave-maker-core": "workspace:*",
     "vue": "^3.5.0",
     "tsup": "^8.0.0"
   }

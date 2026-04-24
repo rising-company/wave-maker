@@ -17,12 +17,15 @@
   "files": ["src"],
   "scripts": { "build": "echo 'Svelte components are compiled by the consumer bundler'" },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
-    "@rising-company/wave-maker": "workspace:*",
+    "@rising-company/wave-maker-core": "workspace:*",
     "svelte": "^5.0.0"
   },
   "devDependencies": {
-    "@rising-company/wave-maker": "workspace:*",
+    "@rising-company/wave-maker-core": "workspace:*",
     "svelte": "^5.0.0",
     "tsup": "^8.0.0"
   }

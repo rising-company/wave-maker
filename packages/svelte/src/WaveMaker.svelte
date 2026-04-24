@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { WaveMaker as WaveMakerCore, type WaveMakerOptions, type PresetName } from '@rising-company/wave-maker'
+  import { WaveMaker as WaveMakerCore, type WaveMakerOptions, type PresetName } from '@rising-company/wave-maker-core'
 
   let {
     preset = 'ocean', colors, speed = 1.0, amplitude = 1.0,

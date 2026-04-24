@@ -14,7 +14,7 @@ importers:
 
   demo:
     dependencies:
-      '@rising-company/wave-maker':
+      '@rising-company/wave-maker-core':
         specifier: workspace:*
         version: link:../packages/core
     devDependencies:
@@ -39,7 +39,7 @@ importers:
 
   packages/react:
     devDependencies:
-      '@rising-company/wave-maker':
+      '@rising-company/wave-maker-core':
         specifier: workspace:*
         version: link:../core
       '@types/react':
@@ -60,7 +60,7 @@ importers:
 
   packages/svelte:
     devDependencies:
-      '@rising-company/wave-maker':
+      '@rising-company/wave-maker-core':
         specifier: workspace:*
         version: link:../core
       svelte:
@@ -72,7 +72,7 @@ importers:
 
   packages/vue:
     devDependencies:
-      '@rising-company/wave-maker':
+      '@rising-company/wave-maker-core':
         specifier: workspace:*
         version: link:../core
       tsup:

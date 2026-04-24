@@ -1,5 +1,5 @@
-import { WaveMaker, presetNames, getPreset } from '@rising-company/wave-maker'
-import type { PresetName } from '@rising-company/wave-maker'
+import { WaveMaker, presetNames, getPreset } from '@rising-company/wave-maker-core'
+import type { PresetName } from '@rising-company/wave-maker-core'
 
 // --- Random palette generation ---
 
@@ -82,7 +82,7 @@ function generateCode(framework: Framework, state: PlaygroundState): string {
 
   if (framework === 'vanilla') {
     const optsStr = hasOpts ? `, ${formatJSObject(opts)}` : ''
-    return `import { WaveMaker } from '@rising-company/wave-maker'
+    return `import { WaveMaker } from '@rising-company/wave-maker-core'
 
 const canvas = document.getElementById('my-canvas')
 const wm = new WaveMaker(canvas${optsStr})`

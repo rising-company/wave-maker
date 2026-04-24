@@ -1,4 +1,4 @@
-import { WaveMaker } from '@rising-company/wave-maker'
+import { WaveMaker } from '@rising-company/wave-maker-core'
 
 export function createShowcases(container: HTMLElement): void {
   container.innerHTML = `

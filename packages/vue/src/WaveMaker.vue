@@ -4,7 +4,7 @@ import {
   WaveMaker as WaveMakerCore,
   type WaveMakerOptions,
   type PresetName,
-} from '@rising-company/wave-maker'
+} from '@rising-company/wave-maker-core'
 
 defineOptions({ inheritAttrs: false })
 

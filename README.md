@@ -10,22 +10,22 @@ Inspired by [Alex Harri's "A flowing WebGL gradient, deconstructed"](https://ale
 
 **Core (vanilla JS):**
 ```bash
-npm install @rising-company/wave-maker
+npm install @rising-company/wave-maker-core
 ```
 
 **React:**
 ```bash
-npm install @rising-company/wave-maker-react @rising-company/wave-maker
+npm install @rising-company/wave-maker-react @rising-company/wave-maker-core
 ```
 
 **Vue:**
 ```bash
-npm install @rising-company/wave-maker-vue @rising-company/wave-maker
+npm install @rising-company/wave-maker-vue @rising-company/wave-maker-core
 ```
 
 **Svelte:**
 ```bash
-npm install @rising-company/wave-maker-svelte @rising-company/wave-maker
+npm install @rising-company/wave-maker-svelte @rising-company/wave-maker-core
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @rising-company/wave-maker-svelte @rising-company/wave-maker
 ### Vanilla JS
 
 ```js
-import { WaveMaker } from '@rising-company/wave-maker'
+import { WaveMaker } from '@rising-company/wave-maker-core'
 
 const wave = new WaveMaker(document.querySelector('canvas'), { preset: 'ocean' })
 ```

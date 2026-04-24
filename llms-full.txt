@@ -5,21 +5,21 @@
 ## Installation
 
 Core (vanilla JS):
-npm install @rising-company/wave-maker
+npm install @rising-company/wave-maker-core
 
 React:
-npm install @rising-company/wave-maker-react @rising-company/wave-maker
+npm install @rising-company/wave-maker-react @rising-company/wave-maker-core
 
 Vue:
-npm install @rising-company/wave-maker-vue @rising-company/wave-maker
+npm install @rising-company/wave-maker-vue @rising-company/wave-maker-core
 
 Svelte:
-npm install @rising-company/wave-maker-svelte @rising-company/wave-maker
+npm install @rising-company/wave-maker-svelte @rising-company/wave-maker-core
 
 ## Quick Start
 
 ### Vanilla JS
-import { WaveMaker } from '@rising-company/wave-maker'
+import { WaveMaker } from '@rising-company/wave-maker-core'
 const wave = new WaveMaker(document.querySelector('canvas'), { preset: 'ocean' })
 
 ### React

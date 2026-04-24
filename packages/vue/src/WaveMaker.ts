@@ -11,7 +11,7 @@ import {
 import {
   WaveMaker as WaveMakerCore,
   type PresetName,
-} from '@rising-company/wave-maker'
+} from '@rising-company/wave-maker-core'
 
 export const WaveMaker = defineComponent({
   name: 'WaveMaker',

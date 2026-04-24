@@ -3,7 +3,7 @@ import {
   WaveMaker as WaveMakerCore,
   type WaveMakerOptions,
   type PresetName,
-} from '@rising-company/wave-maker'
+} from '@rising-company/wave-maker-core'
 
 export interface WaveMakerProps extends WaveMakerOptions {
   /** CSS class name for the wrapper div */

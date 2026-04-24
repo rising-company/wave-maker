@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@rising-company/wave-maker": "workspace:*"
+    "@rising-company/wave-maker-core": "workspace:*"
   },
   "devDependencies": {
     "vite": "^6.0.0",

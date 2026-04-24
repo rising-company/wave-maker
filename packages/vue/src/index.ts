@@ -5,6 +5,6 @@ export type {
   WaveMakerOptions,
   PresetName,
   Preset,
-} from '@rising-company/wave-maker'
+} from '@rising-company/wave-maker-core'
 
-export { getPreset, presetNames } from '@rising-company/wave-maker'
+export { getPreset, presetNames } from '@rising-company/wave-maker-core'
