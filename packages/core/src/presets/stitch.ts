@@ -9,10 +9,10 @@ export const stitch: Preset = {
   defaults: {
     valley: true,
     valleyDepth: 0.38,
-    amplitude: 1.2,
+    amplitude: 1.5,
     waveCount: 2,
-    blur: 1.0,      // moderate edge blur; Stitch's softness comes from post-process Gaussian blur
-    speed: 0.4,     // slow, smooth animation
+    blur: 1.2,
+    speed: 0.8,
     noiseDetail: 3,
   },
 }
