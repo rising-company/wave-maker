@@ -31,10 +31,6 @@ export function createHero(container: HTMLElement): void {
   `
   const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement
   new WaveMaker(canvas, {
-    preset: 'aurora',
-    valley: true,
-    valleyDepth: 0.35,
-    amplitude: 1.0,
-    speed: 0.6,
+    preset: 'stitch',
   })
 }
