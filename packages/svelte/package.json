@@ -1,0 +1,29 @@
+{
+  "name": "@rising-company/wave-maker-svelte",
+  "version": "0.1.0",
+  "description": "Svelte component for wave-maker WebGL gradients",
+  "type": "module",
+  "svelte": "./src/index.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "svelte": "./src/index.ts",
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "files": ["src"],
+  "scripts": { "build": "echo 'Svelte components are compiled by the consumer bundler'" },
+  "license": "MIT",
+  "peerDependencies": {
+    "@rising-company/wave-maker": "workspace:*",
+    "svelte": "^5.0.0"
+  },
+  "devDependencies": {
+    "@rising-company/wave-maker": "workspace:*",
+    "svelte": "^5.0.0",
+    "tsup": "^8.0.0"
+  }
+}
