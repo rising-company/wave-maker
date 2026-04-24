@@ -2,7 +2,13 @@ import { noiseGLSL } from './noise'
 
 /**
  * Builds the wave gradient fragment shader.
- * Handles WebGL 1 vs 2 differences (version header, texture sampling, output).
+ *
+ * Faithfully adapted from Alex Harri's "A flowing WebGL gradient, deconstructed"
+ * https://alexharri.com/blog/webgl-gradients
+ * https://github.com/alexharri/website
+ *
+ * Extended with configurable uniforms for wave count, valley geometry,
+ * amplitude, speed, blur, and noise detail.
  */
 export function buildFragmentShader(isWebGL2: boolean): string {
   const versionHeader = isWebGL2
@@ -27,112 +33,155 @@ uniform float u_blur;
 uniform float u_wave_count;
 uniform float u_noise_detail;
 
+const float PI = 3.14159;
+
 ${noiseGLSL}
 
+// Center x coordinate (from Alex Harri's get_x)
+float get_x() {
+  return 900.0 + gl_FragCoord.x - u_resolution.x / 2.0;
+}
+
+// Utility functions
 float smooth5(float t) {
   return t * t * t * (t * (6.0 * t - 15.0) + 10.0);
 }
 
 float lerp(float a, float b, float t) {
-  return a + (b - a) * t;
+  return a * (1.0 - t) + b * t;
 }
 
-float wave_y_noise(float offset) {
-  float t = u_time * u_speed;
-  float n = 0.0;
-  // 4 stacked simplex noise layers at different frequencies
-  n += snoise2(vec2(offset * 0.8 + t * 0.3, t * 0.2)) * 0.5;
-  n += snoise2(vec2(offset * 1.6 + t * 0.5, t * 0.3 + 10.0)) * 0.25;
-  n += snoise2(vec2(offset * 3.2 + t * 0.7, t * 0.4 + 20.0)) * 0.125;
-  n += snoise2(vec2(offset * 6.4 + t * 0.9, t * 0.5 + 30.0)) * 0.0625;
-  // 2 sine waves for broad motion
-  n += sin(offset * 1.5 + t * 0.6) * 0.3;
-  n += sin(offset * 2.5 + t * 0.4 + 1.0) * 0.15;
-  return n * u_amplitude;
+float ease_in(float x) {
+  return 1.0 - cos((x * PI) * 0.5);
 }
 
-float calc_blur(float offset) {
-  float t = u_time * u_speed;
-  float base = u_blur * 0.06;
-  float noise_mod = snoise2(vec2(offset * 2.0 + t * 0.2, t * 0.15 + 50.0));
-  return base * (1.0 + noise_mod * 0.3);
+// Wave blur part — multi-sample blur for smooth edges
+float wave_alpha_part(float dist, float blur_fac, float t) {
+  float exp = mix(0.90000, 1.20000, t);
+  float v = pow(blur_fac, exp);
+  v = ease_in(v);
+  v = smooth5(v);
+  v = clamp(v, 0.008, 1.0);
+  v *= 345.0 * u_blur;
+  float alpha = clamp(0.5 + dist / v, 0.0, 1.0);
+  alpha = smooth5(alpha);
+  return alpha;
 }
 
-float wave_alpha(float wave_y_base, float wave_height, float offset) {
-  float wy = wave_y_base + wave_height;
-  float frag_y = gl_FragCoord.y;
-  float blur_r = calc_blur(offset);
-  float dist = frag_y - wy;
-
-  // Valley geometry: push wave down at horizontal center
-  if (u_valley > 0.5) {
-    float center_x = u_resolution.x * 0.5;
-    float dx = (gl_FragCoord.x - center_x) / (u_resolution.x * 0.5);
-    float valley_factor = 1.0 - smooth5(clamp(abs(dx), 0.0, 1.0));
-    dist += valley_factor * u_valley_depth * u_resolution.y * 0.3;
-  }
-
-  float edge = blur_r * u_resolution.y;
-  if (edge < 1.0) edge = 1.0;
-  return smooth5(clamp(dist / edge + 0.5, 0.0, 1.0));
-}
-
+// Background noise — stacked 3D simplex for color variation
 float background_noise(float offset) {
-  if (u_noise_detail < 1.0) return 0.0;
-  float t = u_time * u_speed;
-  float n = 0.0;
-  float scale = 1.0;
-  float amp = 0.04;
-  for (float i = 0.0; i < 6.0; i += 1.0) {
-    if (i >= u_noise_detail) break;
-    n += snoise3(vec3(
-      gl_FragCoord.x / u_resolution.x * scale * 3.0 + offset,
-      gl_FragCoord.y / u_resolution.y * scale * 3.0,
-      t * 0.15 + i * 7.0
-    )) * amp;
-    scale *= 2.0;
-    amp *= 0.5;
+  const float S = 0.064;
+  const float L = 0.00085;
+  const float L1 = 1.5, L2 = 0.9, L3 = 0.6;
+  const float LY1 = 1.00, LY2 = 0.85, LY3 = 0.70;
+  const float F = 0.04;
+  const float Y_SCALE = 1.0 / 0.27;
+
+  float x = get_x() * L;
+  float y = gl_FragCoord.y * L * Y_SCALE;
+  float time = u_time * u_speed + offset;
+  float x_shift = time * F;
+  float sum = 0.5;
+  sum += simplex_noise(vec3(x * L1 +  x_shift * 1.1, y * L1 * LY1, time * S)) * 0.30;
+  if (u_noise_detail >= 2.0)
+    sum += simplex_noise(vec3(x * L2 + -x_shift * 0.6, y * L2 * LY2, time * S)) * 0.25;
+  if (u_noise_detail >= 3.0)
+    sum += simplex_noise(vec3(x * L3 +  x_shift * 0.8, y * L3 * LY3, time * S)) * 0.20;
+  return sum;
+}
+
+// Wave boundary noise — stacked 2D simplex at different frequencies
+float wave_y_noise(float offset) {
+  float time = u_time * u_speed + offset;
+  float x = get_x() * 0.000845;
+  float y = time * 0.075;
+  float x_shift = time * 0.026;
+
+  float sum = 0.0;
+  sum += simplex_noise(vec2(x * 1.30 + x_shift, y * 0.54)) * 0.85;
+  sum += simplex_noise(vec2(x * 1.00 + x_shift, y * 0.68)) * 1.15;
+  sum += simplex_noise(vec2(x * 0.70 + x_shift, y * 0.59)) * 0.60;
+  sum += simplex_noise(vec2(x * 0.40 + x_shift, y * 0.48)) * 0.40;
+  return sum;
+}
+
+// Blur bias — oscillates over time for breathing effect
+float calc_blur_bias() {
+  const float S = 0.261;
+  float bias_t = (sin(u_time * u_speed * S) + 1.0) * 0.5;
+  return lerp(-0.17, -0.04, bias_t);
+}
+
+// Blur factor — noise-modulated for irregular edge softness
+float calc_blur(float offset) {
+  float time = u_time * u_speed + offset;
+  float x = get_x() * 0.0011;
+
+  float blur_fac = calc_blur_bias();
+  blur_fac += simplex_noise(vec2(x * 0.60 + time * 0.03, time * 0.07 * 0.7)) * 0.5;
+  blur_fac += simplex_noise(vec2(x * 1.30 + time * 0.03 * -0.8, time * 0.07)) * 0.4;
+  blur_fac = (blur_fac + 1.0) * 0.5;
+  blur_fac = clamp(blur_fac, 0.0, 1.0);
+  return blur_fac;
+}
+
+// Wave alpha — distance from wave curve with multi-sample blur
+float wave_alpha(float Y, float wave_height, float offset) {
+  // Valley geometry: parabolic dip pushing wave away from center
+  float valley_shift = 0.0;
+  if (u_valley > 0.5) {
+    float nx = gl_FragCoord.x / u_resolution.x;
+    valley_shift = u_valley_depth * u_resolution.y * 4.0 * (nx - 0.5) * (nx - 0.5);
   }
-  return n;
+
+  float wave_y = Y + valley_shift + wave_y_noise(offset) * wave_height * u_amplitude;
+  float dist = wave_y - gl_FragCoord.y;
+  float blur_fac = calc_blur(offset);
+
+  // Multi-sample blur (7 samples for quality)
+  const float PART = 1.0 / 7.0;
+  float sum = 0.0;
+  for (int i = 0; i < 7; i++) {
+    float t = PART * float(i);
+    sum += wave_alpha_part(dist, blur_fac, t) * PART;
+  }
+  return sum;
+}
+
+vec3 calc_color(float lightness) {
+  lightness = clamp(lightness, 0.0, 1.0);
+  return vec3(${textureSample}(u_gradient, vec2(lightness, 0.5)));
 }
 
 void main() {
   float h = u_resolution.y;
-  float offset_x = gl_FragCoord.x / u_resolution.x;
 
-  // 3 wave base positions
-  float w1_y = 0.45 * h;
-  float w2_y = 0.75 * h;
-  float w3_y = 0.25 * h;
+  // Wave base positions and heights (from Alex Harri's original)
+  float WAVE1_Y = 0.45 * h;
+  float WAVE2_Y = 0.90 * h;
+  float WAVE3_Y = 0.25 * h;
+  float WAVE1_HEIGHT = 0.195 * h;
+  float WAVE2_HEIGHT = 0.144 * h;
+  float WAVE3_HEIGHT = 0.12 * h;
 
-  // Wave heights via noise
-  float w1_h = wave_y_noise(offset_x) * h * 0.1;
-  float w2_h = wave_y_noise(offset_x + 5.0) * h * 0.08;
-  float w3_h = wave_y_noise(offset_x + 10.0) * h * 0.07;
-
-  // Background lightness variation
-  float bg_noise = background_noise(0.0);
-
-  // Per-wave lightness noise
-  float w1_noise = background_noise(100.0);
-  float w2_noise = background_noise(200.0);
-  float w3_noise = background_noise(300.0);
+  // Background and per-wave lightness (different time offsets decorrelate)
+  float bg_lightness = background_noise(-192.4);
+  float w1_lightness = background_noise( 273.3);
+  float w2_lightness = background_noise( 623.1);
+  float w3_lightness = background_noise( 911.7);
 
   // Wave alphas
-  float a1 = wave_alpha(w1_y, w1_h, offset_x);
-  float a2 = (u_wave_count >= 2.0) ? wave_alpha(w2_y, w2_h, offset_x + 5.0) : 0.0;
-  float a3 = (u_wave_count >= 3.0) ? wave_alpha(w3_y, w3_h, offset_x + 10.0) : 0.0;
+  float w1_alpha = wave_alpha(WAVE1_Y, WAVE1_HEIGHT, 112.5 * 48.75);
+  float w2_alpha = u_wave_count >= 2.0 ? wave_alpha(WAVE2_Y, WAVE2_HEIGHT, 225.0 * 36.00) : 0.0;
+  float w3_alpha = u_wave_count >= 3.0 ? wave_alpha(WAVE3_Y, WAVE3_HEIGHT, 337.5 * 24.00) : 0.0;
 
-  // Composite lightness: base 0.5, shifted by waves and noise
-  float lightness = 0.5 + bg_noise;
-  lightness = lerp(lightness, lightness + 0.15 + w1_noise, a1);
-  lightness = lerp(lightness, lightness + 0.1 + w2_noise, a2);
-  lightness = lerp(lightness, lightness - 0.1 + w3_noise, a3);
-  lightness = clamp(lightness, 0.0, 1.0);
+  // Composite lightness
+  float lightness = bg_lightness;
+  lightness = lerp(lightness, w2_lightness, w2_alpha);
+  lightness = lerp(lightness, w1_lightness, w1_alpha);
+  lightness = lerp(lightness, w3_lightness, w3_alpha);
 
-  // Sample gradient texture
-  vec4 color = ${textureSample}(u_gradient, vec2(lightness, 0.5));
-  ${fragColorName} = color;
+  ${fragColorName} = vec4(calc_color(lightness), 1.0);
 }
 `
 }
