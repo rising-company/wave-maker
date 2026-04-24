@@ -1,0 +1,88 @@
+# wave-maker
+
+> Beautiful animated WebGL wave gradient effects for the web.
+
+## Installation
+
+Core (vanilla JS):
+npm install @rising-company/wave-maker
+
+React:
+npm install @rising-company/wave-maker-react @rising-company/wave-maker
+
+Vue:
+npm install @rising-company/wave-maker-vue @rising-company/wave-maker
+
+Svelte:
+npm install @rising-company/wave-maker-svelte @rising-company/wave-maker
+
+## Quick Start
+
+### Vanilla JS
+import { WaveMaker } from '@rising-company/wave-maker'
+const wave = new WaveMaker(document.querySelector('canvas'), { preset: 'ocean' })
+
+### React
+import { WaveMaker } from '@rising-company/wave-maker-react'
+<WaveMaker preset="ocean" className="absolute inset-0" />
+
+### Vue
+<WaveMaker preset="ocean" class="absolute inset-0" />
+
+### Svelte
+<WaveMaker preset="ocean" class="absolute inset-0" />
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| preset | 'ocean'|'sunset'|'aurora'|'stitch'|'midnight'|'ember' | 'ocean' | Color theme |
+| colors | string[] | from preset | Custom gradient colors (3-6 hex values) |
+| speed | number | 1.0 | Animation speed (0 = frozen) |
+| amplitude | number | 1.0 | Wave height multiplier |
+| waveCount | 1|2|3 | 2 | Number of wave layers |
+| valley | boolean | false | Center valley for overlaying content |
+| valleyDepth | number | 0.32 | Valley depth (0-1) |
+| blur | number | 1.0 | Edge blur intensity |
+| noiseDetail | number | 4 | Noise octaves (1-6) |
+| fps | number | 60 | Frame rate cap |
+| pixelRatio | number | devicePixelRatio | Rendering resolution |
+| animate | boolean | true | Auto-start |
+
+## Methods
+
+wave.play() — resume
+wave.pause() — pause
+wave.destroy() — cleanup
+wave.resize() — manual resize
+wave.setPreset(name) — switch preset
+wave.setColors(colors) — set custom colors
+wave.setSpeed(n) — update speed
+wave.setAmplitude(n) — update amplitude
+
+## Properties
+
+wave.isPlaying — boolean
+wave.currentPreset — PresetName | null
+
+## Presets
+
+- ocean: Deep blues, teals, seafoam
+- sunset: Oranges, purples, pinks
+- aurora: Greens, cyans, magentas
+- stitch: Purple/indigo + amber/cream (valley enabled by default)
+- midnight: Dark blues, silver, slate
+- ember: Reds, golds, deep black
+
+## Common Patterns
+
+### Hero background with content overlay
+<div style={{ position: 'relative', height: '100vh' }}>
+  <WaveMaker preset="stitch" valley className="absolute inset-0" />
+  <div style={{ position: 'relative', zIndex: 1 }}>
+    <h1>Your content here</h1>
+  </div>
+</div>
+
+### Full-page background
+<WaveMaker preset="ocean" style={{ position: 'fixed', inset: 0, zIndex: -1 }} />
