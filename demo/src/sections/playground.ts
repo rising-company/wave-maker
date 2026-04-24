@@ -1,8 +1,9 @@
-import { WaveMaker, presetNames } from '@rising-company/wave-maker'
+import { WaveMaker, presetNames, getPreset } from '@rising-company/wave-maker'
 import type { PresetName } from '@rising-company/wave-maker'
 
 interface PlaygroundState {
   preset: PresetName
+  colors: string[] | null // null = use preset colors
   speed: number
   amplitude: number
   blur: number
@@ -14,6 +15,7 @@ interface PlaygroundState {
 
 const DEFAULTS: PlaygroundState = {
   preset: 'ocean',
+  colors: null,
   speed: 1.0,
   amplitude: 1.0,
   blur: 1.0,
@@ -25,10 +27,15 @@ const DEFAULTS: PlaygroundState = {
 
 type Framework = 'react' | 'vue' | 'svelte' | 'vanilla'
 
+function getActiveColors(state: PlaygroundState): string[] {
+  if (state.colors) return state.colors
+  return getPreset(state.preset).colors
+}
+
 function generateCode(framework: Framework, state: PlaygroundState): string {
-  // Collect non-default options
   const opts: Record<string, unknown> = {}
   if (state.preset !== DEFAULTS.preset) opts.preset = state.preset
+  if (state.colors) opts.colors = state.colors
   if (state.speed !== DEFAULTS.speed) opts.speed = state.speed
   if (state.amplitude !== DEFAULTS.amplitude) opts.amplitude = state.amplitude
   if (state.blur !== DEFAULTS.blur) opts.blur = state.blur
@@ -49,11 +56,11 @@ const wm = new WaveMaker(canvas${optsStr})`
 
   if (framework === 'react') {
     const propsStr = hasOpts ? formatJSXProps(opts) : ''
-    return `import { WaveGradient } from '@rising-company/wave-maker-react'
+    return `import { WaveMaker } from '@rising-company/wave-maker-react'
 
 export default function App() {
   return (
-    <WaveGradient
+    <WaveMaker
       style={{ width: '100%', height: 400 }}${propsStr}
     />
   )
@@ -63,23 +70,23 @@ export default function App() {
   if (framework === 'vue') {
     const propsStr = hasOpts ? formatVueProps(opts) : ''
     return `<template>
-  <WaveGradient
+  <WaveMaker
     style="width: 100%; height: 400px"${propsStr}
   />
 </template>
 
 <script setup>
-import { WaveGradient } from '@rising-company/wave-maker-vue'
+import { WaveMaker } from '@rising-company/wave-maker-vue'
 </script>`
   }
 
   // svelte
   const propsStr = hasOpts ? formatSvelteProps(opts) : ''
   return `<script>
-  import { WaveGradient } from '@rising-company/wave-maker-svelte'
+  import { WaveMaker } from '@rising-company/wave-maker-svelte'
 </script>
 
-<WaveGradient
+<WaveMaker
   style="width: 100%; height: 400px"${propsStr}
 />`
 }
@@ -87,6 +94,7 @@ import { WaveGradient } from '@rising-company/wave-maker-vue'
 function formatJSObject(obj: Record<string, unknown>): string {
   const entries = Object.entries(obj).map(([k, v]) => {
     if (typeof v === 'string') return `${k}: '${v}'`
+    if (Array.isArray(v)) return `${k}: [${v.map(c => `'${c}'`).join(', ')}]`
     return `${k}: ${v}`
   })
   return `{ ${entries.join(', ')} }`
@@ -97,6 +105,7 @@ function formatJSXProps(obj: Record<string, unknown>): string {
     .map(([k, v]) => {
       if (typeof v === 'string') return `\n      ${k}="${v}"`
       if (typeof v === 'boolean') return v ? `\n      ${k}` : `\n      ${k}={false}`
+      if (Array.isArray(v)) return `\n      ${k}={[${v.map(c => `'${c}'`).join(', ')}]}`
       return `\n      ${k}={${v}}`
     })
     .join('')
@@ -106,6 +115,7 @@ function formatVueProps(obj: Record<string, unknown>): string {
   return Object.entries(obj)
     .map(([k, v]) => {
       if (typeof v === 'string') return `\n    ${k}="${v}"`
+      if (Array.isArray(v)) return `\n    :${k}="[${v.map(c => `'${c}'`).join(', ')}]"`
       return `\n    :${k}="${v}"`
     })
     .join('')
@@ -116,18 +126,105 @@ function formatSvelteProps(obj: Record<string, unknown>): string {
     .map(([k, v]) => {
       if (typeof v === 'string') return `\n  ${k}="${v}"`
       if (typeof v === 'boolean') return v ? `\n  ${k}={true}` : `\n  ${k}={false}`
+      if (Array.isArray(v)) return `\n  ${k}={[${v.map(c => `'${c}'`).join(', ')}]}`
       return `\n  ${k}={${v}}`
     })
     .join('')
 }
 
-// Controls that require full recreation (vs. dynamic setters)
-const RECREATE_KEYS: (keyof PlaygroundState)[] = ['preset', 'blur', 'waveCount', 'valley', 'valleyDepth', 'noiseDetail']
-
 export function createPlayground(container: HTMLElement): void {
   const state: PlaygroundState = { ...DEFAULTS }
   let wm: WaveMaker | null = null
   let activeFramework: Framework = 'vanilla'
+
+  function recreate(): void {
+    if (wm) { wm.destroy(); wm = null }
+    const opts: any = { ...state }
+    if (state.colors) opts.colors = state.colors
+    else delete opts.colors
+    wm = new WaveMaker(
+      document.getElementById('pg-canvas') as HTMLCanvasElement,
+      opts
+    )
+  }
+
+  function updateCode(): void {
+    const el = document.getElementById('pg-code-output')
+    if (el) el.textContent = generateCode(activeFramework, state)
+  }
+
+  function renderColorSwatches(): void {
+    const swatchContainer = document.getElementById('pg-color-swatches')
+    if (!swatchContainer) return
+
+    const colors = getActiveColors(state)
+    swatchContainer.innerHTML = ''
+
+    colors.forEach((color, i) => {
+      const swatch = document.createElement('div')
+      swatch.className = 'pg-color-swatch'
+      swatch.style.backgroundColor = color
+      swatch.title = color
+
+      // Hidden color input
+      const input = document.createElement('input')
+      input.type = 'color'
+      input.value = color
+      input.style.cssText = 'position:absolute;width:0;height:0;opacity:0;pointer-events:none;'
+      swatch.appendChild(input)
+
+      swatch.addEventListener('click', () => input.click())
+
+      input.addEventListener('input', () => {
+        if (!state.colors) state.colors = [...getActiveColors(state)]
+        state.colors[i] = input.value
+        swatch.style.backgroundColor = input.value
+        swatch.title = input.value
+        recreate()
+        updateCode()
+      })
+
+      // Remove button
+      if (colors.length > 3) {
+        const removeBtn = document.createElement('span')
+        removeBtn.className = 'pg-color-remove'
+        removeBtn.textContent = '\u00d7'
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation()
+          if (!state.colors) state.colors = [...getActiveColors(state)]
+          state.colors.splice(i, 1)
+          recreate()
+          updateCode()
+          renderColorSwatches()
+        })
+        swatch.appendChild(removeBtn)
+      }
+
+      swatchContainer.appendChild(swatch)
+    })
+
+    // Add button (max 6)
+    if (colors.length < 6) {
+      const addBtn = document.createElement('div')
+      addBtn.className = 'pg-color-swatch pg-color-add'
+      addBtn.textContent = '+'
+      addBtn.title = 'Add color'
+      addBtn.addEventListener('click', () => {
+        if (!state.colors) state.colors = [...getActiveColors(state)]
+        state.colors.push('#ffffff')
+        recreate()
+        updateCode()
+        renderColorSwatches()
+      })
+      swatchContainer.appendChild(addBtn)
+    }
+
+    // Reset button (only if custom colors)
+    const resetBtn = document.getElementById('pg-color-reset')
+    if (resetBtn) {
+      resetBtn.style.display = state.colors ? '' : 'none'
+    }
+  }
 
   container.innerHTML = `
     <section class="section">
@@ -147,6 +244,12 @@ export function createPlayground(container: HTMLElement): void {
           <div class="pg-group">
             <label class="pg-label">Preset</label>
             <div class="pg-btn-group" id="pg-presets"></div>
+          </div>
+
+          <!-- Colors -->
+          <div class="pg-group">
+            <label class="pg-label">Colors <button class="pg-color-reset-btn" id="pg-color-reset" style="display: none;">Reset</button></label>
+            <div class="pg-color-swatches" id="pg-color-swatches"></div>
           </div>
 
           <!-- Speed -->
@@ -216,22 +319,6 @@ export function createPlayground(container: HTMLElement): void {
     </section>
   `
 
-  const canvas = document.getElementById('pg-canvas') as HTMLCanvasElement
-
-  // --- Helpers ---
-  function recreate(): void {
-    if (wm) {
-      wm.destroy()
-      wm = null
-    }
-    wm = new WaveMaker(canvas, { ...state })
-  }
-
-  function updateCode(): void {
-    const el = document.getElementById('pg-code-output')!
-    el.textContent = generateCode(activeFramework, state)
-  }
-
   // --- Init preset buttons ---
   const presetGroup = document.getElementById('pg-presets')!
   for (const name of presetNames) {
@@ -248,10 +335,20 @@ export function createPlayground(container: HTMLElement): void {
     if (!btn) return
     const name = btn.dataset.val as PresetName
     state.preset = name
+    state.colors = null // reset custom colors on preset change
     presetGroup.querySelectorAll('.pg-btn').forEach((b) => b.classList.remove('pg-btn--active'))
     btn.classList.add('pg-btn--active')
     recreate()
     updateCode()
+    renderColorSwatches()
+  })
+
+  // --- Color reset ---
+  document.getElementById('pg-color-reset')!.addEventListener('click', () => {
+    state.colors = null
+    recreate()
+    updateCode()
+    renderColorSwatches()
   })
 
   // --- Speed slider ---
@@ -354,13 +451,12 @@ export function createPlayground(container: HTMLElement): void {
     const code = document.getElementById('pg-code-output')!.textContent ?? ''
     navigator.clipboard.writeText(code).then(() => {
       copyBtn.textContent = 'Copied!'
-      setTimeout(() => {
-        copyBtn.textContent = 'Copy'
-      }, 2000)
+      setTimeout(() => { copyBtn.textContent = 'Copy' }, 2000)
     })
   })
 
   // --- Init ---
+  renderColorSwatches()
   recreate()
   updateCode()
 }
