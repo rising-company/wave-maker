@@ -9,10 +9,10 @@ export const stitch: Preset = {
   defaults: {
     valley: true,
     valleyDepth: 0.38,
-    amplitude: 1.5,
+    amplitude: 0.2,
     waveCount: 2,
-    blur: 1.2,
-    speed: 0.8,
-    noiseDetail: 3,
+    blur: 2,
+    speed: 0.4,
+    noiseDetail: 2,
   },
 }
