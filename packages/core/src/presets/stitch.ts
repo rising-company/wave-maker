@@ -12,7 +12,7 @@ export const stitch: Preset = {
     amplitude: 0.2,
     waveCount: 2,
     blur: 2,
-    speed: 0.4,
+    speed: 1,
     noiseDetail: 2,
   },
 }
