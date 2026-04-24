@@ -1,6 +1,40 @@
 import { WaveMaker, presetNames, getPreset } from '@rising-company/wave-maker'
 import type { PresetName } from '@rising-company/wave-maker'
 
+// --- Random palette generation ---
+
+function hslToHex(h: number, s: number, l: number): string {
+  s /= 100
+  l /= 100
+  const a = s * Math.min(l, 1 - l)
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return Math.round(255 * Math.max(0, Math.min(1, color)))
+      .toString(16)
+      .padStart(2, '0')
+  }
+  return `#${f(0)}${f(8)}${f(4)}`
+}
+
+function generateRandomPalette(): string[] {
+  // Pick a random base hue, then build a harmonious 5-color gradient
+  // from dark to light with hue variation
+  const baseHue = Math.random() * 360
+  const count = 4 + Math.floor(Math.random() * 2) // 4-5 colors
+  const hueSpread = 30 + Math.random() * 60 // 30-90 degree spread
+
+  const colors: string[] = []
+  for (let i = 0; i < count; i++) {
+    const t = i / (count - 1) // 0..1
+    const hue = (baseHue + t * hueSpread) % 360
+    const sat = 50 + Math.random() * 40 // 50-90%
+    const lit = 8 + t * 62 + (Math.random() - 0.5) * 15 // ~8% to ~70%
+    colors.push(hslToHex(hue, sat, Math.max(5, Math.min(80, lit))))
+  }
+  return colors
+}
+
 interface PlaygroundState {
   preset: PresetName
   colors: string[] | null // null = use preset colors
@@ -248,7 +282,7 @@ export function createPlayground(container: HTMLElement): void {
 
           <!-- Colors -->
           <div class="pg-group">
-            <label class="pg-label">Colors <button class="pg-color-reset-btn" id="pg-color-reset" style="display: none;">Reset</button></label>
+            <label class="pg-label">Colors <button class="pg-color-reset-btn" id="pg-color-random">Random</button><button class="pg-color-reset-btn" id="pg-color-reset" style="display: none;">Reset</button></label>
             <div class="pg-color-swatches" id="pg-color-swatches"></div>
           </div>
 
@@ -338,6 +372,14 @@ export function createPlayground(container: HTMLElement): void {
     state.colors = null // reset custom colors on preset change
     presetGroup.querySelectorAll('.pg-btn').forEach((b) => b.classList.remove('pg-btn--active'))
     btn.classList.add('pg-btn--active')
+    recreate()
+    updateCode()
+    renderColorSwatches()
+  })
+
+  // --- Color random ---
+  document.getElementById('pg-color-random')!.addEventListener('click', () => {
+    state.colors = generateRandomPalette()
     recreate()
     updateCode()
     renderColorSwatches()
