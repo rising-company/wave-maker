@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="8" fill="#0a0c10"/>
+  <!-- HUD corner brackets -->
+  <path d="M6 16 L6 6 L16 6" fill="none" stroke="#3af0a040" stroke-width="1.5"/>
+  <path d="M48 6 L58 6 L58 16" fill="none" stroke="#3af0a040" stroke-width="1.5"/>
+  <path d="M6 48 L6 58 L16 58" fill="none" stroke="#3af0a040" stroke-width="1.5"/>
+  <path d="M48 58 L58 58 L58 48" fill="none" stroke="#3af0a040" stroke-width="1.5"/>
+  <!-- Rising arrow / chevron -->
+  <path d="M32 14 L46 34 L38 34 L38 50 L26 50 L26 34 L18 34 Z" fill="url(#grad)" opacity="0.95"/>
+  <!-- Gradient mint to blue -->
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3af0a0"/>
+      <stop offset="100%" stop-color="#2a7adf"/>
+    </linearGradient>
+  </defs>
+  <!-- Scanline overlay -->
+  <line x1="18" y1="28" x2="46" y2="28" stroke="#0a0c10" stroke-width="1" opacity="0.3"/>
+  <line x1="26" y1="38" x2="38" y2="38" stroke="#0a0c10" stroke-width="1" opacity="0.3"/>
+  <line x1="26" y1="44" x2="38" y2="44" stroke="#0a0c10" stroke-width="1" opacity="0.3"/>
+</svg>
