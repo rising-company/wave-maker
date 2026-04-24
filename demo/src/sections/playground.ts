@@ -261,10 +261,11 @@ export function createPlayground(container: HTMLElement): void {
   }
 
   container.innerHTML = `
+    <hr class="section-divider" />
     <section class="section">
-      <span class="section-label" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">INTERACTIVE</span>
+      <div class="section-eyebrow">// Interactive &middot; Configuration</div>
       <h2 class="section-title">Playground</h2>
-      <p class="section-desc">Tweak every parameter and copy the code for your framework</p>
+      <p class="section-desc">Tweak parameters &mdash; copy the code for your framework</p>
 
       <div class="pg-layout">
         <div class="pg-preview">
@@ -274,43 +275,36 @@ export function createPlayground(container: HTMLElement): void {
         </div>
 
         <div class="pg-controls">
-          <!-- Preset -->
           <div class="pg-group">
             <label class="pg-label">Preset</label>
             <div class="pg-btn-group" id="pg-presets"></div>
           </div>
 
-          <!-- Colors -->
           <div class="pg-group">
             <label class="pg-label">Colors <button class="pg-color-reset-btn" id="pg-color-random">Random</button><button class="pg-color-reset-btn" id="pg-color-reset" style="display: none;">Reset</button></label>
             <div class="pg-color-swatches" id="pg-color-swatches"></div>
           </div>
 
-          <!-- Speed -->
           <div class="pg-group">
             <label class="pg-label">Speed <span id="pg-speed-val">1.0</span></label>
             <input type="range" class="pg-slider" id="pg-speed" min="0" max="3" step="0.1" value="1.0" />
           </div>
 
-          <!-- Amplitude -->
           <div class="pg-group">
             <label class="pg-label">Amplitude <span id="pg-amp-val">1.0</span></label>
             <input type="range" class="pg-slider" id="pg-amp" min="0" max="3" step="0.1" value="1.0" />
           </div>
 
-          <!-- Blur -->
           <div class="pg-group">
             <label class="pg-label">Blur <span id="pg-blur-val">1.0</span></label>
             <input type="range" class="pg-slider" id="pg-blur" min="0" max="3" step="0.1" value="1.0" />
           </div>
 
-          <!-- Noise Detail -->
           <div class="pg-group">
             <label class="pg-label">Noise Detail <span id="pg-noise-val">4</span></label>
             <input type="range" class="pg-slider" id="pg-noise" min="1" max="6" step="1" value="4" />
           </div>
 
-          <!-- Wave Count -->
           <div class="pg-group">
             <label class="pg-label">Wave Count</label>
             <div class="pg-btn-group" id="pg-wave-count">
@@ -320,7 +314,6 @@ export function createPlayground(container: HTMLElement): void {
             </div>
           </div>
 
-          <!-- Valley -->
           <div class="pg-group">
             <label class="pg-label">Valley</label>
             <div class="pg-btn-group" id="pg-valley">
@@ -329,7 +322,6 @@ export function createPlayground(container: HTMLElement): void {
             </div>
           </div>
 
-          <!-- Valley Depth (conditionally visible) -->
           <div class="pg-group" id="pg-valley-depth-group" style="display: none;">
             <label class="pg-label">Valley Depth <span id="pg-vd-val">0.32</span></label>
             <input type="range" class="pg-slider" id="pg-vd" min="0" max="1" step="0.01" value="0.32" />
@@ -337,7 +329,6 @@ export function createPlayground(container: HTMLElement): void {
         </div>
       </div>
 
-      <!-- Code Output -->
       <div class="pg-code-section">
         <div class="pg-tabs" id="pg-tabs">
           <button class="pg-tab" data-fw="react">React</button>
