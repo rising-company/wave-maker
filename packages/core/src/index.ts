@@ -1,0 +1,5 @@
+export { WaveMaker } from './wave-maker'
+export { resolveOptions } from './wave-maker'
+export type { ResolvedOptions } from './wave-maker'
+export type { WaveMakerOptions, Preset, PresetName } from './types'
+export { getPreset, presetNames } from './presets'
