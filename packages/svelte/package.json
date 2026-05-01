@@ -1,7 +1,8 @@
 {
   "name": "@rising-company/wave-maker-svelte",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Svelte component for wave-maker WebGL gradients",
+  "author": "Ben Cao <ben@rising.company>",
   "type": "module",
   "svelte": "./src/index.ts",
   "main": "./src/index.ts",
@@ -16,7 +17,36 @@
   },
   "files": ["src"],
   "scripts": { "build": "echo 'Svelte components are compiled by the consumer bundler'" },
+  "keywords": [
+    "svelte",
+    "svelte5",
+    "svelte-component",
+    "svelte-gradient",
+    "webgl",
+    "gradient",
+    "animated-gradient",
+    "mesh-gradient",
+    "wave",
+    "waves",
+    "animation",
+    "animated-background",
+    "background",
+    "hero",
+    "hero-section",
+    "canvas",
+    "shader",
+    "glsl",
+    "visual-effects",
+    "ui"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rising-company/wave-maker.git",
+    "directory": "packages/svelte"
+  },
+  "homepage": "https://github.com/rising-company/wave-maker#readme",
+  "bugs": "https://github.com/rising-company/wave-maker/issues",
   "publishConfig": {
     "access": "public"
   },

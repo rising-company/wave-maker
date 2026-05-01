@@ -1,7 +1,8 @@
 {
   "name": "@rising-company/wave-maker-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Beautiful animated WebGL wave gradient effects",
+  "author": "Ben Cao <ben@rising.company>",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -29,11 +30,33 @@
   "keywords": [
     "webgl",
     "gradient",
+    "animated-gradient",
+    "mesh-gradient",
     "wave",
+    "waves",
     "animation",
-    "shader"
+    "animated-background",
+    "background",
+    "hero",
+    "hero-section",
+    "canvas",
+    "shader",
+    "glsl",
+    "fragment-shader",
+    "gpu",
+    "generative",
+    "procedural",
+    "visual-effects",
+    "ui"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rising-company/wave-maker.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/rising-company/wave-maker#readme",
+  "bugs": "https://github.com/rising-company/wave-maker/issues",
   "publishConfig": {
     "access": "public"
   },

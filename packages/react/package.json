@@ -1,7 +1,8 @@
 {
   "name": "@rising-company/wave-maker-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React component for wave-maker WebGL gradients",
+  "author": "Ben Cao <ben@rising.company>",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -14,7 +15,35 @@
   },
   "files": ["dist"],
   "scripts": { "build": "tsup" },
+  "keywords": [
+    "react",
+    "react-component",
+    "react-gradient",
+    "webgl",
+    "gradient",
+    "animated-gradient",
+    "mesh-gradient",
+    "wave",
+    "waves",
+    "animation",
+    "animated-background",
+    "background",
+    "hero",
+    "hero-section",
+    "canvas",
+    "shader",
+    "glsl",
+    "visual-effects",
+    "ui"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rising-company/wave-maker.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/rising-company/wave-maker#readme",
+  "bugs": "https://github.com/rising-company/wave-maker/issues",
   "publishConfig": {
     "access": "public"
   },
