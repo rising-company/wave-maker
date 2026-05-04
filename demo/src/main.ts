@@ -27,7 +27,7 @@ app.appendChild(playgroundContainer)
 // Footer
 const footer = document.createElement('footer')
 footer.className = 'site-footer'
-footer.innerHTML = '// wave-maker &mdash; rising company &middot; webgl gradients &middot; open source'
+footer.innerHTML = '// wave-maker &mdash; <a href="https://rising.company" target="_blank" rel="noopener noreferrer">rising company</a> &middot; webgl gradients &middot; open source'
 app.appendChild(footer)
 
 createHero(heroContainer)
