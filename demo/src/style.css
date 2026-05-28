@@ -26,9 +26,9 @@
   /* Text */
   --text-heading: #e8f4ff;
   --text-body: #c8d8e8;
-  --text-muted: #6a8a80;
-  --text-subtle: #4a6a5a;
-  --text-label: #3a5a50;
+  --text-muted: #84a89a;
+  --text-subtle: #6a8a7a;
+  --text-label: #4a6a5c;
   --text-dim: #2a3a30;
 
   /* Accents */
@@ -140,7 +140,7 @@ body {
 
 .section-desc {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-subtle);
   letter-spacing: 2px;
   margin-bottom: var(--space-element);
@@ -181,7 +181,7 @@ body {
 
 .hero-eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 4px;
   color: var(--accent-primary);
   text-transform: uppercase;
@@ -222,7 +222,7 @@ body {
 .hero-install-tab {
   padding: 6px 14px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1px;
   text-transform: uppercase;
   border: none;
@@ -251,7 +251,7 @@ body {
 
 .hero-install-code code {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--accent-primary);
   letter-spacing: 1px;
 }
@@ -259,7 +259,7 @@ body {
 .hero-install-copy {
   padding: 3px 10px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1px;
   border: 1px solid rgba(58, 240, 160, 0.2);
   border-radius: 3px;
@@ -290,7 +290,7 @@ body {
 
 .hero-stats .stat-label {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-label);
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -314,7 +314,7 @@ body {
 
 .hero-controls-hint p {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-label);
   letter-spacing: 2px;
   line-height: 1.9;
@@ -364,7 +364,7 @@ body {
 
 .showcase-overlay p {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
   letter-spacing: 2px;
 }
@@ -398,7 +398,7 @@ body {
 
 .pg-label {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -531,7 +531,7 @@ body {
   right: 12px;
   padding: 5px 12px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1px;
   border: 1px solid var(--border-default);
   border-radius: 3px;
@@ -608,7 +608,7 @@ body {
   border: none;
   font-family: var(--font-mono);
   color: var(--text-muted);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1px;
   cursor: pointer;
   margin-left: 8px;
@@ -624,7 +624,7 @@ body {
   padding: var(--space-element) var(--space-page);
   border-top: 1px solid var(--border-default);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-dim);
   letter-spacing: 2px;
 }
@@ -659,7 +659,7 @@ body {
   }
 
   .hero-subtitle {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .hero-stats,
