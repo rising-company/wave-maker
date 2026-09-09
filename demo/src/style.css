@@ -27,9 +27,9 @@
   --text-heading: #e8f4ff;
   --text-body: #c8d8e8;
   --text-muted: #84a89a;
-  --text-subtle: #6a8a7a;
-  --text-label: #4a6a5c;
-  --text-dim: #2a3a30;
+  --text-subtle: #7d9b8c;
+  --text-label: #6e8f80;
+  --text-dim: #61856d;
 
   /* Accents */
   --accent-primary: #3af0a0;
@@ -122,8 +122,8 @@ body {
 
 .section-eyebrow {
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 4px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
   color: var(--accent-primary);
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -140,9 +140,9 @@ body {
 
 .section-desc {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-subtle);
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
   margin-bottom: var(--space-element);
   line-height: 1.5;
 }
@@ -182,7 +182,7 @@ body {
 .hero-eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 4px;
+  letter-spacing: 0.2em;
   color: var(--accent-primary);
   text-transform: uppercase;
   margin-bottom: 12px;
@@ -200,9 +200,9 @@ body {
 
 .hero-subtitle {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-subtle);
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
   margin-bottom: 28px;
 }
 
@@ -222,8 +222,8 @@ body {
 .hero-install-tab {
   padding: 6px 14px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   border: none;
   background: none;
@@ -253,14 +253,14 @@ body {
   font-family: var(--font-mono);
   font-size: 14px;
   color: var(--accent-primary);
-  letter-spacing: 1px;
+  letter-spacing: 0.05em;
 }
 
 .hero-install-copy {
   padding: 3px 10px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   border: 1px solid rgba(58, 240, 160, 0.2);
   border-radius: 3px;
   background: rgba(58, 240, 160, 0.06);
@@ -290,17 +290,17 @@ body {
 
 .hero-stats .stat-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-label);
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .hero-stats .stat-value {
   font-family: var(--font-mono);
-  font-size: 16px;
+  font-size: 17px;
   color: var(--accent-primary);
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
 }
 
 .hero-controls-hint {
@@ -314,9 +314,9 @@ body {
 
 .hero-controls-hint p {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-label);
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
   line-height: 1.9;
 }
 
@@ -364,9 +364,9 @@ body {
 
 .showcase-overlay p {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
 }
 
 /* ── Playground ── */
@@ -398,10 +398,10 @@ body {
 
 .pg-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: normal;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
   color: var(--text-label);
 }
 
@@ -455,8 +455,8 @@ body {
 .pg-btn {
   padding: 5px 11px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   border: 1px solid var(--border-default);
   border-radius: 3px;
   background: var(--bg-surface);
@@ -492,8 +492,8 @@ body {
 .pg-tab {
   padding: 10px 20px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   border: none;
   background: none;
   color: var(--text-label);
@@ -531,8 +531,8 @@ body {
   right: 12px;
   padding: 5px 12px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   border: 1px solid var(--border-default);
   border-radius: 3px;
   background: var(--bg-surface);
@@ -608,8 +608,8 @@ body {
   border: none;
   font-family: var(--font-mono);
   color: var(--text-muted);
-  font-size: 10px;
-  letter-spacing: 1px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   cursor: pointer;
   margin-left: 8px;
 }
@@ -624,9 +624,9 @@ body {
   padding: var(--space-element) var(--space-page);
   border-top: 1px solid var(--border-default);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-dim);
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
 }
 
 .site-footer a {
