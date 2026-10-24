@@ -27,9 +27,7 @@
   --text-heading: #e8f4ff;
   --text-body: #c8d8e8;
   --text-muted: #84a89a;
-  --text-subtle: #7d9b8c;
-  --text-label: #6e8f80;
-  --text-dim: #61856d;
+  --text-dim: #6e8f80;
 
   /* Accents */
   --accent-primary: #3af0a0;
@@ -41,7 +39,10 @@
 
   /* Fonts */
   --font-display: 'Rajdhani', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
+  --font-text: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Share Tech Mono', ui-monospace, monospace;
+  --type-label: 0.75rem; --type-small: 0.875rem; --type-body: 1rem; --type-lead: 1.25rem;
+  --type-section: 1.75rem; --type-page: 2.25rem; --type-hero: 3.5rem;
 
   /* Spacing */
   --space-page: 48px;
@@ -53,7 +54,7 @@
 }
 
 body {
-  font-family: var(--font-display);
+  font-family: var(--font-text);
   background: var(--bg-base);
   color: var(--text-body);
   -webkit-font-smoothing: antialiased;
@@ -122,7 +123,7 @@ body {
 
 .section-eyebrow {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   color: var(--accent-primary);
   text-transform: uppercase;
@@ -131,7 +132,7 @@ body {
 
 .section-title {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--text-heading);
   letter-spacing: 2px;
@@ -139,10 +140,9 @@ body {
 }
 
 .section-desc {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-subtle);
-  letter-spacing: 0.1em;
+  font-family: var(--font-text);
+  font-size: var(--type-body);
+  color: var(--text-muted);
   margin-bottom: var(--space-element);
   line-height: 1.5;
 }
@@ -181,7 +181,7 @@ body {
 
 .hero-eyebrow {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   color: var(--accent-primary);
   text-transform: uppercase;
@@ -190,7 +190,7 @@ body {
 
 .hero-title {
   font-family: var(--font-display);
-  font-size: 56px;
+  font-size: 3.5rem;
   font-weight: 700;
   color: var(--text-heading);
   letter-spacing: 3px;
@@ -200,8 +200,8 @@ body {
 
 .hero-subtitle {
   font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-subtle);
+  font-size: var(--type-small);
+  color: var(--text-muted);
   letter-spacing: 0.1em;
   margin-bottom: 28px;
 }
@@ -221,13 +221,11 @@ body {
 
 .hero-install-tab {
   padding: 6px 14px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-family: var(--font-text);
+  font-size: var(--type-small); font-weight: 500;
   border: none;
   background: none;
-  color: var(--text-label);
+  color: var(--text-dim);
   cursor: pointer;
   transition: color 0.2s;
 }
@@ -251,20 +249,19 @@ body {
 
 .hero-install-code code {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--accent-primary);
   letter-spacing: 0.05em;
 }
 
 .hero-install-copy {
   padding: 3px 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  font-family: var(--font-text);
+  font-size: var(--type-small); font-weight: 500;
   border: 1px solid rgba(58, 240, 160, 0.2);
   border-radius: 3px;
   background: rgba(58, 240, 160, 0.06);
-  color: var(--text-label);
+  color: var(--text-dim);
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
   white-space: nowrap;
@@ -290,15 +287,15 @@ body {
 
 .hero-stats .stat-label {
   font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-label);
+  font-size: 0.75rem;
+  color: var(--text-dim);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .hero-stats .stat-value {
   font-family: var(--font-mono);
-  font-size: 17px;
+  font-size: var(--type-lead);
   color: var(--accent-primary);
   letter-spacing: 0.06em;
 }
@@ -313,10 +310,9 @@ body {
 }
 
 .hero-controls-hint p {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-label);
-  letter-spacing: 0.1em;
+  font-family: var(--font-text);
+  font-size: var(--type-small);
+  color: var(--text-dim);
   line-height: 1.9;
 }
 
@@ -355,7 +351,7 @@ body {
 
 .showcase-overlay h3 {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--text-heading);
   letter-spacing: 2px;
@@ -363,10 +359,9 @@ body {
 }
 
 .showcase-overlay p {
-  font-family: var(--font-mono);
-  font-size: 13px;
+  font-family: var(--font-text);
+  font-size: var(--type-small);
   color: var(--text-muted);
-  letter-spacing: 0.1em;
 }
 
 /* ── Playground ── */
@@ -398,11 +393,11 @@ body {
 
 .pg-label {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--text-label);
+  color: var(--text-dim);
 }
 
 .pg-label span {
@@ -410,7 +405,7 @@ body {
   font-weight: normal;
   margin-left: 6px;
   letter-spacing: 1px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* Slider */
@@ -454,9 +449,8 @@ body {
 
 .pg-btn {
   padding: 5px 11px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  font-family: var(--font-text);
+  font-size: var(--type-small); font-weight: 500;
   border: 1px solid var(--border-default);
   border-radius: 3px;
   background: var(--bg-surface);
@@ -491,12 +485,11 @@ body {
 
 .pg-tab {
   padding: 10px 20px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  font-family: var(--font-text);
+  font-size: var(--type-small); font-weight: 500;
   border: none;
   background: none;
-  color: var(--text-label);
+  color: var(--text-dim);
   cursor: pointer;
   transition: color 0.2s;
 }
@@ -520,7 +513,7 @@ body {
   background: var(--bg-base);
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.7;
   color: var(--text-body);
 }
@@ -530,13 +523,12 @@ body {
   top: 12px;
   right: 12px;
   padding: 5px 12px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  font-family: var(--font-text);
+  font-size: var(--type-small); font-weight: 500;
   border: 1px solid var(--border-default);
   border-radius: 3px;
   background: var(--bg-surface);
-  color: var(--text-label);
+  color: var(--text-dim);
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
 }
@@ -576,7 +568,7 @@ body {
   border-radius: 50%;
   background: var(--accent-danger);
   color: var(--text-heading);
-  font-size: 10px;
+  font-size: 0.75rem;
   line-height: 14px;
   text-align: center;
   cursor: pointer;
@@ -593,8 +585,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-label);
-  font-size: 16px;
+  color: var(--text-dim);
+  font-size: 1rem;
   font-weight: 300;
 }
 
@@ -606,10 +598,9 @@ body {
 .pg-color-reset-btn {
   background: none;
   border: none;
-  font-family: var(--font-mono);
+  font-family: var(--font-text);
   color: var(--text-muted);
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  font-size: var(--type-small); font-weight: 500;
   cursor: pointer;
   margin-left: 8px;
 }
@@ -624,7 +615,7 @@ body {
   padding: var(--space-element) var(--space-page);
   border-top: 1px solid var(--border-default);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-dim);
   letter-spacing: 0.1em;
 }
@@ -655,11 +646,11 @@ body {
   }
 
   .hero-title {
-    font-size: 36px;
+    font-size: 2.25rem;
   }
 
   .hero-subtitle {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
 
   .hero-stats,
@@ -667,3 +658,8 @@ body {
     display: none;
   }
 }
+
+/* Lucide icons, squared (design system → Icons) */
+.icon { width: 1.25em; height: 1.25em; flex: none; vertical-align: -0.25em; fill: none; stroke: currentColor; stroke-width: 1.5px; stroke-linecap: square; stroke-linejoin: miter; }
+.icon * { vector-effect: non-scaling-stroke; }
+.icon-sm { width: 1rem; height: 1rem; }

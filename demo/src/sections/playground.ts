@@ -222,7 +222,9 @@ export function createPlayground(container: HTMLElement): void {
       if (colors.length > 3) {
         const removeBtn = document.createElement('span')
         removeBtn.className = 'pg-color-remove'
-        removeBtn.textContent = '\u00d7'
+        // Lucide x, squared by .icon (design system → Icons)
+        removeBtn.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>'
+        removeBtn.title = 'Remove color'
         removeBtn.addEventListener('click', (e) => {
           e.stopPropagation()
           if (!state.colors) state.colors = [...getActiveColors(state)]
@@ -241,7 +243,7 @@ export function createPlayground(container: HTMLElement): void {
     if (colors.length < 6) {
       const addBtn = document.createElement('div')
       addBtn.className = 'pg-color-swatch pg-color-add'
-      addBtn.textContent = '+'
+      addBtn.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>'
       addBtn.title = 'Add color'
       addBtn.addEventListener('click', () => {
         if (!state.colors) state.colors = [...getActiveColors(state)]
@@ -349,7 +351,7 @@ export function createPlayground(container: HTMLElement): void {
   for (const name of presetNames) {
     const btn = document.createElement('button')
     btn.className = 'pg-btn' + (name === state.preset ? ' pg-btn--active' : '')
-    btn.textContent = name
+    btn.textContent = name.charAt(0).toUpperCase() + name.slice(1)
     btn.dataset.val = name
     presetGroup.appendChild(btn)
   }
